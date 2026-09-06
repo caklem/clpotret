@@ -9,26 +9,19 @@ const { class: className, loading = 'lazy', size = '4rem' } = Astro.props;
 ---
 
 <span class:list={['brand-logo', className]} style={`--logo-size:${size}`}>
-  <img src="/IMG/logo-cl-potret.png" alt="CL Potret" loading={loading} decoding="async" />
+  <img src="/IMG/logo-cl-potret.png?v=2" alt="CL Potret" loading={loading} decoding="async" />
 </span>
 
 <style>
   .brand-logo {
     display: block;
     width: var(--logo-size);
-    height: var(--logo-size);
-    overflow: hidden;
-    background: #fefdfc;
+    aspect-ratio: 598 / 612;
   }
 
   .brand-logo img {
     display: block;
-    width: 227%;
-    max-width: none;
+    width: 100%;
     height: auto;
-    position: relative;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -53%);
   }
 </style>
