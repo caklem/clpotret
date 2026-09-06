@@ -1,0 +1,6 @@
+---
+interface Props { eyebrow?: string; title?: string; body?: string; dark?: boolean; href?: string; buttonLabel?: string; }
+const { eyebrow='Let’s make photographs', title='Sudah punya konsep foto yang ingin diwujudkan?', body='Ceritakan rencanamu. Kami akan membantu memilih sesi, waktu, dan lokasi yang paling tepat.', dark=true, href='/booking', buttonLabel='Book Your Session' } = Astro.props;
+---
+<section class:list={['cta', { dark }]} data-reveal><div class="container-copy"><p class="eyebrow">{eyebrow}</p><h2 class="display">{title}</h2><p>{body}</p><a href={href} class:list={['button', { 'button-light': dark }]}>{buttonLabel}</a></div></section>
+<style>.cta{text-align:center;padding:clamp(6rem,12vw,11rem) 0;background:#d8cdbd}.cta.dark{background:#26241f;color:#f3f0e9}.cta h2{font-size:clamp(3rem,7vw,7rem);max-width:1000px;margin:1.5rem auto 2rem}.cta p:not(.eyebrow){max-width:540px;margin:0 auto 2.5rem;line-height:1.8;color:inherit;opacity:.72}</style>

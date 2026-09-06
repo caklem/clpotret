@@ -1,0 +1,7 @@
+---
+import type { packages } from '../data/pricing';
+interface Props { item: typeof packages[number]; index: number; }
+const { item, index } = Astro.props;
+---
+<article class="price" data-reveal><span class="eyebrow">0{index + 1}</span><h3 class="display">{item.name}</h3><p class="note">{item.note}</p><p class="amount">{item.price}</p><ul>{item.features.map(x => <li>{x}</li>)}</ul><a href={`/booking?package=${encodeURIComponent(item.name)}`} class="link-line">Book This Package</a></article>
+<style>.price{border-top:1px solid #1d1c19;padding:1.5rem 0 2rem}.price h3{font-size:clamp(2.4rem,4vw,4rem);margin:2.5rem 0 .4rem}.note{color:#68645d}.amount{font-family:var(--font-display);font-size:2rem;margin:2.5rem 0}.price ul{list-style:none;padding:1.5rem 0;margin:0 0 2rem;border-top:1px solid #1d1c1922}.price li{padding:.42rem 0;font-size:.88rem}.price li::before{content:'—';margin-right:.8rem;color:#9a7658}</style>

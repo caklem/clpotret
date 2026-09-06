@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@theme { --color-ink: #1d1c19; --color-paper: #f3f0e9; --color-clay: #9a7658; --color-sand: #d8cdbd; --font-display: "Italiana", Georgia, serif; --font-sans: "DM Sans", Arial, sans-serif; }
+:root { color-scheme: light; } html { scroll-behavior: smooth; background: #f3f0e9; } body { margin: 0; background: #f3f0e9; color: #1d1c19; font-family: var(--font-sans); overflow-x: hidden; }
+* { box-sizing: border-box; } ::selection { background: #9a7658; color: white; } a { color: inherit; text-decoration: none; } button, input, select, textarea { font: inherit; } img { display: block; width: 100%; }
+.display { font-family: var(--font-display); font-weight: 400; letter-spacing: -.035em; line-height: .98; }
+.eyebrow { font-size: .69rem; line-height: 1; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; }
+.container-wide { width: min(100% - 2rem, 1420px); margin-inline: auto; } .container-copy { width: min(100% - 2rem, 1100px); margin-inline: auto; } .section-space { padding-block: clamp(5rem, 10vw, 9rem); }
+.link-line { display: inline-flex; align-items: center; gap: .8rem; padding-bottom: .35rem; border-bottom: 1px solid currentColor; font-size: .78rem; letter-spacing: .13em; text-transform: uppercase; }
+.link-line::after { content: '↗'; transition: transform .25s ease; } .link-line:hover::after { transform: translate(3px, -3px); }
+.button { display: inline-flex; justify-content: center; align-items: center; min-height: 3.2rem; padding: .8rem 1.4rem; background: #1d1c19; color: white; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; transition: background .25s, color .25s; }
+.button:hover { background: #9a7658; } .button-light { background: #f3f0e9; color: #1d1c19; } .button-light:hover { background: white; }
+[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.8,.2,1); } [data-reveal].is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } [data-reveal] { opacity: 1; transform: none; transition: none; } }
