@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check:responsive": "node scripts/check-responsive.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
