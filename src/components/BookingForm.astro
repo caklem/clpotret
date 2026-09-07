@@ -41,11 +41,35 @@ import { graduationPackages, generalPackages } from '../data/pricing';
       }
     }
 
-    form.onsubmit = (e) => {
+    form.onsubmit = async (e) => {
       e.preventDefault();
       const data = new FormData(form);
       const get = (k: string) => data.get(k) || '-';
       const message = `Halo CL Potret 📸\n\nSaya ingin melakukan booking sesi foto.\n\nNama: ${get('name')}\nNomor WhatsApp: ${get('phone')}\nInstagram: ${get('instagram')}\nJenis Sesi: ${get('session')}\nPaket: ${get('package')}\nTanggal: ${get('date')}\nJam: ${get('time')}\nLokasi: ${get('location')}\nJumlah Orang: ${get('people')}\nCatatan: ${get('notes')}\n\nApakah jadwal tersebut tersedia?`;
+
+      // Send to Fonte via server-side API
+      try {
+        await fetch('/api/booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: get('name'),
+            phone: get('phone'),
+            instagram: get('instagram'),
+            session: get('session'),
+            package: get('package'),
+            date: get('date'),
+            time: get('time'),
+            location: get('location'),
+            people: get('people'),
+            notes: get('notes'),
+          }),
+        });
+      } catch (err) {
+        console.error('Fonte error:', err);
+      }
+
+      // Open WhatsApp
       window.open(`https://wa.me/${form.dataset.phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
     };
   };
