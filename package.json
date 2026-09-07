@@ -9,8 +9,8 @@
     "dev": "astro dev",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "build": "astro build",
-    "preview": "wrangler pages dev dist",
-    "deploy": "astro build && wrangler pages deploy dist --project-name=cl-potret",
+    "preview": "astro build && wrangler dev",
+    "deploy": "astro build && wrangler deploy",
     "check:responsive": "node scripts/check-responsive.mjs",
     "astro": "astro"
   },
