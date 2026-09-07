@@ -9,6 +9,3 @@ directory = "./dist"
 
 [observability]
 enabled = true
-
-[secrets]
-required = ["FONNTE_TOKEN"]
