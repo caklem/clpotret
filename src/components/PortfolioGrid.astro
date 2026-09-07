@@ -1,13 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import { portfolio, categories } from '../data/portfolio';
-interface Props { limit?: number; interactive?: boolean; }
-const { limit, interactive=false } = Astro.props; const items = limit ? portfolio.slice(0, limit) : portfolio;
+import type { FeaturedItem } from '../data/featured';
+interface Props { limit?: number; interactive?: boolean; items?: FeaturedItem[]; }
+const { limit, interactive=false, items: customItems } = Astro.props;
+const items = customItems ?? (limit ? portfolio.slice(0, limit) : portfolio);
 ---
 {interactive && <div class="filters" aria-label="Filter portfolio">{categories.map((c,i) => <button class:list={{active:i===0}} data-filter={c}>{c}</button>)}</div>}
 <div class:list={['portfolio-grid',{compact:limit}]} data-grid>
   {items.map((item) => <article data-category={item.category} class={item.ratio}>
-    <button class="image" data-lightbox={item.image} data-title={item.title} aria-label={`Lihat ${item.title}`}><Image src={item.image} alt={`${item.title} — ${item.category} photography by CL Potret`} width={1600} height={1200} widths={[480,800,1200]} sizes="(max-width: 700px) 85vw, 50vw" loading="lazy" /></button>
+    <button class="image" data-lightbox={item.image} data-title={item.title} aria-label={`Lihat ${item.title}`}><Image src={item.image} alt={`${item.title} — ${item.category} photography by CL Potret`} width={1600} height={1200} widths={[480,800,1200]} sizes="(max-width: 700px) 85vw, 50vw" loading="lazy" style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined} /></button>
     <div class="meta"><div><p>{item.category}</p><h3 class="display"><a href={`/portfolio/${item.slug}`}>{item.title}</a></h3></div><span>{item.location}</span></div>
   </article>)}
 </div>

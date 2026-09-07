@@ -1,15 +1,148 @@
 export type Category = 'Graduation' | 'Portrait' | 'Outdoor' | 'Couple' | 'Family' | 'Event';
-export interface PortfolioItem { slug: string; title: string; category: Category; location: string; image: string; gallery: string[]; ratio: 'portrait' | 'landscape' | 'square'; description: string; }
-const images = ['https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1800&q=85','https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1800&q=85','https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1600&q=85'];
-const detailImages = ['https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=1600&q=85','https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1600&q=85'];
+
+export interface PortfolioItem {
+  slug: string;
+  title: string;
+  category: Category;
+  location: string;
+  image: string;
+  gallery: string[];
+  ratio: 'portrait' | 'landscape' | 'square';
+  description: string;
+  objectPosition?: string;
+}
+
+// ============================================
+// FOTO PORTFOLIO
+// ============================================
+// Ganti URL foto di bawah ini dengan foto kamu sendiri.
+// Format: '/IMG/portfolio/nama-file.jpg' untuk foto lokal.
+//
+// Struktur folder yang disarankan:
+//   public/IMG/portfolio/
+//     ├── graduation-1.jpg
+//     ├── graduation-2.jpg
+//     ├── portrait-1.jpg
+//     └── dst.
+//
+// Setiap item punya:
+//   - image: foto cover/thumbnail (1 foto)
+//   - gallery: array 3 foto untuk halaman detail
+// ============================================
+
 export const portfolio: PortfolioItem[] = [
-  { slug:'graduation-polinema', title:'A Quiet Milestone', category:'Graduation', location:'Polinema, Malang', image:images[0], gallery:[images[0],detailImages[0],detailImages[1]], ratio:'portrait', description:'Sesi wisuda yang tenang dan personal, menangkap rasa lega di akhir sebuah perjalanan.' },
-  { slug:'graduation-ub', title:'After the Ceremony', category:'Graduation', location:'Universitas Brawijaya', image:images[1], gallery:[images[1],detailImages[1],detailImages[2]], ratio:'landscape', description:'Potret kelulusan dengan cahaya sore dan gestur yang apa adanya.' },
-  { slug:'portrait-arda', title:'Arda in Afternoon', category:'Portrait', location:'Malang', image:images[2], gallery:[images[2],detailImages[3],detailImages[4]], ratio:'portrait', description:'Portrait editorial sederhana dengan karakter personal yang kuat.' },
-  { slug:'couple-senja', title:'Senja, Together', category:'Couple', location:'Batu', image:images[3], gallery:[images[3],detailImages[0],detailImages[5]], ratio:'landscape', description:'Cerita dua orang dalam warna senja yang hangat dan natural.' },
-  { slug:'family-home', title:'Feels Like Home', category:'Family', location:'Malang', image:images[4], gallery:[images[4],detailImages[1],detailImages[6]], ratio:'square', description:'Kebersamaan keluarga, tanpa pose yang terasa dipaksakan.' },
-  { slug:'event-folk', title:'A Night to Remember', category:'Event', location:'Malang', image:images[5], gallery:[images[5],images[3],images[4]], ratio:'landscape', description:'Dokumentasi suasana, detail, dan energi sebuah perayaan.' },
-  { slug:'outdoor-raya', title:'Open Air', category:'Outdoor', location:'Batu', image:images[6], gallery:[images[6],detailImages[2],detailImages[7]], ratio:'portrait', description:'Hunting foto santai yang menyatu dengan ruang dan cahaya alami.' },
-  { slug:'portrait-mono', title:'In Between', category:'Portrait', location:'Studio Malang', image:images[7], gallery:[images[7],detailImages[4],detailImages[6]], ratio:'portrait', description:'Studi karakter minimal yang intim dan penuh tekstur.' },
+  {
+    slug: 'graduation-polinema',
+    title: 'A Quiet Milestone',
+    category: 'Graduation',
+    location: 'Polinema, Malang',
+    image: '/IMG/portfolio/graduation-polinema-1.jpg',
+    gallery: [
+      '/IMG/portfolio/graduation-polinema-1.jpg',
+      '/IMG/portfolio/graduation-polinema-2.jpg',
+      '/IMG/portfolio/graduation-polinema-3.jpg',
+    ],
+    ratio: 'portrait',
+    description: 'Sesi wisuda yang tenang dan personal, menangkap rasa lega di akhir sebuah perjalanan.',
+  },
+  {
+    slug: 'graduation-ub',
+    title: 'After the Ceremony',
+    category: 'Graduation',
+    location: 'Universitas Brawijaya',
+    image: '/IMG/portfolio/graduation-ub-1.jpg',
+    gallery: [
+      '/IMG/portfolio/graduation-ub-1.jpg',
+      '/IMG/portfolio/graduation-ub-2.jpg',
+      '/IMG/portfolio/graduation-ub-3.jpg',
+    ],
+    ratio: 'landscape',
+    description: 'Potret kelulusan dengan cahaya sore dan gestur yang apa adanya.',
+  },
+  {
+    slug: 'portrait-arda',
+    title: 'Arda in Afternoon',
+    category: 'Portrait',
+    location: 'Malang',
+    image: '/IMG/portfolio/portrait-arda-1.jpg',
+    gallery: [
+      '/IMG/portfolio/portrait-arda-1.jpg',
+      '/IMG/portfolio/portrait-arda-2.jpg',
+      '/IMG/portfolio/portrait-arda-3.jpg',
+    ],
+    ratio: 'portrait',
+    description: 'Portrait editorial sederhana dengan karakter personal yang kuat.',
+  },
+  {
+    slug: 'couple-senja',
+    title: 'Senja, Together',
+    category: 'Couple',
+    location: 'Batu',
+    image: '/IMG/portfolio/couple-senja-1.jpg',
+    gallery: [
+      '/IMG/portfolio/couple-senja-1.jpg',
+      '/IMG/portfolio/couple-senja-2.jpg',
+      '/IMG/portfolio/couple-senja-3.jpg',
+    ],
+    ratio: 'landscape',
+    description: 'Cerita dua orang dalam warna senja yang hangat dan natural.',
+  },
+  {
+    slug: 'family-home',
+    title: 'Feels Like Home',
+    category: 'Family',
+    location: 'Malang',
+    image: '/IMG/portfolio/family-home-1.jpg',
+    gallery: [
+      '/IMG/portfolio/family-home-1.jpg',
+      '/IMG/portfolio/family-home-2.jpg',
+      '/IMG/portfolio/family-home-3.jpg',
+    ],
+    ratio: 'square',
+    description: 'Kebersamaan keluarga, tanpa pose yang terasa dipaksakan.',
+  },
+  {
+    slug: 'event-folk',
+    title: 'A Night to Remember',
+    category: 'Event',
+    location: 'Malang',
+    image: '/IMG/portfolio/event-folk-1.jpg',
+    gallery: [
+      '/IMG/portfolio/event-folk-1.jpg',
+      '/IMG/portfolio/event-folk-2.jpg',
+      '/IMG/portfolio/event-folk-3.jpg',
+    ],
+    ratio: 'landscape',
+    description: 'Dokumentasi suasana, detail, dan energi sebuah perayaan.',
+  },
+  {
+    slug: 'outdoor-raya',
+    title: 'Open Air',
+    category: 'Outdoor',
+    location: 'Batu',
+    image: '/IMG/portfolio/outdoor-raya-1.jpg',
+    gallery: [
+      '/IMG/portfolio/outdoor-raya-1.jpg',
+      '/IMG/portfolio/outdoor-raya-2.jpg',
+      '/IMG/portfolio/outdoor-raya-3.jpg',
+    ],
+    ratio: 'portrait',
+    description: 'Hunting foto santai yang menyatu dengan ruang dan cahaya alami.',
+  },
+  {
+    slug: 'portrait-mono',
+    title: 'In Between',
+    category: 'Portrait',
+    location: 'Studio Malang',
+    image: '/IMG/portfolio/portrait-mono-1.jpg',
+    gallery: [
+      '/IMG/portfolio/portrait-mono-1.jpg',
+      '/IMG/portfolio/portrait-mono-2.jpg',
+      '/IMG/portfolio/portrait-mono-3.jpg',
+    ],
+    ratio: 'portrait',
+    description: 'Studi karakter minimal yang intim dan penuh tekstur.',
+  },
 ];
-export const categories: Array<'All' | Category> = ['All','Graduation','Portrait','Outdoor','Couple','Family','Event'];
+
+export const categories: Array<'All' | Category> = ['All', 'Graduation', 'Portrait', 'Outdoor', 'Couple', 'Family', 'Event'];

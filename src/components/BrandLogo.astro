@@ -8,20 +8,11 @@ interface Props {
 const { class: className, loading = 'lazy', size = '4rem' } = Astro.props;
 ---
 
-<span class:list={['brand-logo', className]} style={`--logo-size:${size}`}>
-  <img src="/IMG/logo-cl-potret.png?v=2" alt="CL Potret" loading={loading} decoding="async" />
-</span>
+<img class:list={['brand-logo', className]} src="/IMG/Logo.png?v=4" alt="CL Potret" width="120" height="120" loading={loading} decoding="async" style={`width:${size};height:auto`} />
 
 <style>
   .brand-logo {
     display: block;
-    width: var(--logo-size);
-    aspect-ratio: 598 / 612;
-  }
-
-  .brand-logo img {
-    display: block;
-    width: 100%;
-    height: auto;
+    object-fit: contain;
   }
 </style>

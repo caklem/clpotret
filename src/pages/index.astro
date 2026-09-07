@@ -4,13 +4,19 @@ import Layout from '../layouts/Layout.astro';
 import PortfolioGrid from '../components/PortfolioGrid.astro';
 import PricingCard from '../components/PricingCard.astro';
 import CTASection from '../components/CTASection.astro';
-import hero from '../assets/images/graduation-hero.png';
 import mainHero from '../assets/images/hero-main.jpg';
 import { services } from '../data/services';
-import { packages } from '../data/pricing';
-import { portfolio } from '../data/portfolio';
+import { graduationPackages } from '../data/pricing';
+import { featured } from '../data/featured';
 import { site } from '../data/site';
 const categoryItems = services.slice(0,6);
+const igImages = [
+  '/IMG/featured/_DSC0070.jpg',
+  '/IMG/featured/_DSC0084.jpg',
+  '/IMG/services/Wisuda1.jpg',
+  '/IMG/services/Family.jpg',
+  '/IMG/services/_DSC0171.jpg',
+];
 ---
 <Layout transparentNav>
   <section class="hero">
@@ -23,24 +29,24 @@ const categoryItems = services.slice(0,6);
 
   <section class="featured container-wide section-space">
     <div class="section-head" data-reveal><div><p class="eyebrow">Selected stories · 2026</p><h2 class="display">Featured Work</h2></div><a class="link-line" href="/portfolio">Explore All Work</a></div>
-    <PortfolioGrid limit={4} />
+    <PortfolioGrid items={featured} />
   </section>
 
   <section class="categories section-space"><div class="container-wide"><div class="section-head"><div><p class="eyebrow">Find your story</p><h2 class="display">Photography Sessions</h2></div></div><div class="category-grid">
     {categoryItems.map((item,i)=><a href="/services" class="category" data-reveal><Image src={item.image} alt={item.name} width={1200} height={1500} widths={[480,800]} sizes="(max-width: 800px) 50vw, 33vw" loading="lazy"/><span class="num">0{i+1}</span><div><h3 class="display">{item.name.replace(' Photography','').replace(' Session','')}</h3><p>{item.short}</p></div></a>)}
   </div></div></section>
 
-  <section class="graduation"><div class="grad-image"><Image src={hero} alt="Layanan fotografi wisuda CL Potret" widths={[600,1000,1400]} sizes="(max-width: 800px) 100vw, 55vw" loading="lazy" /></div><div class="grad-copy" data-reveal><p class="eyebrow">Our signature session</p><h2 class="display">Graduation,<br/>your way.</h2><p>Setiap kelulusan punya cerita yang berbeda. Sesi kami dirancang agar kamu merasa nyaman, punya ruang untuk menjadi diri sendiri, dan pulang dengan foto yang benar-benar berarti.</p><a class="link-line" href="/portfolio?category=Graduation">Explore Graduation Sessions</a></div></section>
+  <section class="graduation"><div class="grad-image"><Image src="/IMG/graduation-hero.jpg" alt="Layanan fotografi wisuda CL Potret" width={1400} height={900} widths={[600,1000,1400]} sizes="(max-width: 800px) 100vw, 55vw" loading="lazy" /></div><div class="grad-copy" data-reveal><p class="eyebrow">Our signature session</p><h2 class="display">Graduation,<br/>your way.</h2><p>Setiap kelulusan punya cerita yang berbeda. Sesi kami dirancang agar kamu merasa nyaman, punya ruang untuk menjadi diri sendiri, dan pulang dengan foto yang benar-benar berarti.</p><a class="link-line" href="/portfolio?category=Graduation">Explore Graduation Sessions</a></div></section>
 
-  <section id="about" class="about section-space container-wide"><div class="about-copy" data-reveal><p class="eyebrow">Behind the lens</p><h2 class="display">Hello, we’re<br/>CL Potret.</h2><p>CL Potret adalah layanan fotografi berbasis di Malang yang berfokus pada graduation, portrait, dan outdoor photography.</p><p>Kami percaya foto terbaik lahir ketika kamu merasa nyaman. Karena itu, setiap sesi dimulai dengan percakapan, bukan pose.</p><a href={site.instagramUrl} target="_blank" class="link-line">Meet us on Instagram</a></div><div class="about-image"><Image src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?auto=format&fit=crop&w=1400&q=85" alt="Fotografer CL Potret saat bekerja" width={1200} height={1500} widths={[600,900,1200]} sizes="(max-width: 800px) 100vw, 50vw" loading="lazy"/></div><span class="vertical">Natural · Personal · Honest</span></section>
+  <section id="about" class="about section-space container-wide"><div class="about-copy" data-reveal><p class="eyebrow">Behind the lens</p><h2 class="display">Hello, we’re<br/>CL Potret.</h2><p>CL Potret adalah layanan fotografi yang berbasis di Malang dan baru memulai perjalanan di dunia fotografi profesional, dengan fokus pada graduation, portrait, dan outdoor photography.</p><p>Kami terus belajar, berkembang, dan mengeksplorasi setiap momen melalui kamera. Bagi kami, sesi foto bukan sekadar tentang pose, tetapi tentang menciptakan suasana yang nyaman agar setiap ekspresi terasa lebih natural dan memiliki cerita.</p><a href={site.instagramUrl} target="_blank" class="link-line">Meet us on Instagram</a></div><div class="about-image"><Image src="/IMG/services/_DSC0171.jpg" alt="Fotografer CL Potret saat bekerja" width={1200} height={1500} widths={[600,900,1200]} sizes="(max-width: 800px) 100vw, 50vw" loading="lazy"/></div><span class="vertical">Natural · Personal · Honest</span></section>
 
   <section class="services-home section-space"><div class="container-copy"><p class="eyebrow">Ways to work with us</p><h2 class="display">Services</h2><div class="service-list">{services.map(item=><a href="/services" data-reveal><span>{item.number}</span><h3>{item.name}</h3><p>{item.short}</p><b>↗</b></a>)}</div></div></section>
 
-  <section class="packages section-space container-wide"><div class="section-head"><div><p class="eyebrow">Graduation packages</p><h2 class="display">Choose your session</h2></div><a href="/pricing" class="link-line">View All Packages</a></div><div class="package-grid">{packages.map((item,i)=><PricingCard item={item} index={i}/>)}</div></section>
+  <section class="packages section-space container-wide"><div class="section-head"><div><p class="eyebrow">Graduation packages</p><h2 class="display">Choose your session</h2></div><a href="/pricing" class="link-line">View All Packages</a></div><div class="package-grid">{graduationPackages.map((item,i)=><PricingCard item={item} index={i}/>)}</div></section>
 
   <CTASection />
 
-  <section class="instagram section-space container-wide"><div class="ig-head"><div><p class="eyebrow">Follow our stories</p><h2 class="display">{site.instagram}</h2></div><a href={site.instagramUrl} class="link-line" target="_blank">Follow on Instagram</a></div><div class="ig-grid">{portfolio.slice(0,5).map((item,i)=><a href={site.instagramUrl} target="_blank" class:list={{up:i===1||i===3}}><Image src={item.image} alt="CL Potret Instagram story" width={600} height={750} widths={[300,500]} sizes="20vw" loading="lazy"/></a>)}</div></section>
+  <section class="instagram section-space container-wide"><div class="ig-head"><div><p class="eyebrow">Follow our stories</p><h2 class="display">{site.instagram}</h2></div><a href={site.instagramUrl} class="link-line" target="_blank">Follow on Instagram</a></div><div class="ig-grid">{igImages.map((src,i)=><a href={site.instagramUrl} target="_blank" class:list={{up:i===1||i===3}}><Image src={src} alt="CL Potret Instagram story" width={600} height={750} widths={[300,500]} sizes="20vw" loading="lazy"/></a>)}</div></section>
 </Layout>
 <style>
   .hero{height:max(720px,100svh);position:relative;color:white;overflow:hidden}.hero>img{height:100%;object-fit:cover;object-position:center 92%}.shade{position:absolute;inset:0;background:linear-gradient(90deg,#0c0b0985 0%,transparent 62%),linear-gradient(0deg,#0c0b0990,transparent 48%)}.hero-copy{position:absolute;inset:auto max(1rem,5vw) 9vh;max-width:1100px;min-width:0}.hero h1{font-size:clamp(3.8rem,9vw,9.2rem);margin:1rem 0 2rem}.mobile-break{display:none}.hero h1 em,.intro em{font-weight:400;color:#d9c6ae}.hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem}.hero-bottom>p{max-width:400px;line-height:1.65}.hero-bottom>div{display:flex;align-items:center;gap:2rem}.text-link{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid}.scroll{position:absolute;right:2rem;bottom:2.5rem;writing-mode:vertical-rl;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase}.scroll span{margin-top:1rem}
