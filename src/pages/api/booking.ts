@@ -1,36 +1,12 @@
 import type { APIRoute } from 'astro';
 import { getSecret } from 'astro:env/server';
 import { parseBookingConfirmation, sendFonnteConfirmation } from '../../lib/fonnte';
-import { bookingRateLimiter } from '../../lib/rate-limit';
 
 const MAX_BOOKING_BODY_BYTES = 16_384;
 
 export const prerender = false;
 
-function getClientKey(request: Request, clientAddress?: string): string {
-  return request.headers.get('cf-connecting-ip') ?? clientAddress ?? 'unknown';
-}
-
-export const POST: APIRoute = async (context) => {
-  const { request } = context;
-  let clientAddress: string | undefined;
-  try {
-    clientAddress = context.clientAddress;
-  } catch {
-    // Some adapters do not provide a direct client address.
-  }
-
-  const rateLimit = bookingRateLimiter.attempt(getClientKey(request, clientAddress));
-  if (!rateLimit.allowed) {
-    return Response.json(
-      { error: 'Terlalu banyak permintaan. Silakan coba lagi nanti.' },
-      {
-        status: 429,
-        headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) },
-      },
-    );
-  }
-
+export const POST: APIRoute = async ({ request }) => {
   const contentLength = Number(request.headers.get('content-length'));
   if (Number.isFinite(contentLength) && contentLength > MAX_BOOKING_BODY_BYTES) {
     return Response.json({ error: 'Request body terlalu besar.' }, { status: 413 });

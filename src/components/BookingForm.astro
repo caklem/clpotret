@@ -53,7 +53,7 @@ import { graduationPackages, generalPackages } from '../data/pricing';
       const get = (k: string) => data.get(k) || '-';
       const message = `Halo CL Potret 📸\n\nSaya ingin melakukan booking sesi foto.\n\nNama: ${get('name')}\nNomor WhatsApp: ${get('phone')}\nInstagram: ${get('instagram')}\nJenis Sesi: ${get('session')}\nPaket: ${get('package')}\nTanggal: ${get('date')}\nJam: ${get('time')}\nLokasi: ${get('location')}\nJumlah Orang: ${get('people')}\nCatatan: ${get('notes')}\n\nApakah jadwal tersebut tersedia?`;
 
-      // Send to Fonte through the rate-limited server-side API.
+      // Send to Fonnte through the server-side API.
       try {
         const res = await fetch('/api/booking', {
           method: 'POST',
@@ -74,10 +74,7 @@ import { graduationPackages, generalPackages } from '../data/pricing';
 
         if (!res.ok) {
           if (errorEl) {
-            const retryAfter = Number(res.headers.get('Retry-After'));
-            errorEl.textContent = res.status === 429
-              ? `Terlalu banyak percobaan. Coba lagi dalam ${Number.isFinite(retryAfter) ? retryAfter : 60} detik.`
-              : 'Pengiriman gagal. Silakan coba lagi.';
+            errorEl.textContent = 'Pengiriman gagal. Silakan coba lagi.';
             errorEl.hidden = false;
           }
           return;
