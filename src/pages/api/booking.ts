@@ -1,22 +1,17 @@
 import type { APIRoute } from 'astro';
+import { verifyTurnstile } from '../../lib/turnstile';
 
 const FONTE_KEY = import.meta.env.FONTE_KEY;
 const TURNSTILE_SECRET = import.meta.env.TURNSTILE_SECRET;
+const EXPECTED_ACTION = 'booking';
+const EXPECTED_HOSTNAMES = new Set<string>(
+  String(import.meta.env.TURNSTILE_HOSTNAMES ?? '')
+    .split(',')
+    .map((hostname: string) => hostname.trim())
+    .filter(Boolean),
+);
 
-async function verifyTurnstile(token: string, ip?: string): Promise<boolean> {
-  const formData = new URLSearchParams();
-  formData.append('secret', TURNSTILE_SECRET);
-  formData.append('response', token);
-  if (ip) formData.append('remoteip', ip);
-
-  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-    method: 'POST',
-    body: formData,
-  });
-
-  const data = await res.json();
-  return data.success === true;
-}
+export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   const raw = await request.text();
@@ -27,17 +22,20 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ error: 'Invalid request body', raw: raw.slice(0, 200) }), { status: 400 });
   }
   const turnstileToken = body['cf-turnstile-response'];
-
-  // Verify Turnstile token
-  if (!turnstileToken) {
-    return new Response(JSON.stringify({ error: 'Missing Turnstile token' }), { status: 403 });
-  }
-
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || undefined;
-  const verified = await verifyTurnstile(turnstileToken, ip);
+  const ip =
+    request.headers.get('cf-connecting-ip') ??
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    undefined;
+  const verified = await verifyTurnstile({
+    token: turnstileToken,
+    secret: TURNSTILE_SECRET,
+    expectedAction: EXPECTED_ACTION,
+    expectedHostnames: EXPECTED_HOSTNAMES,
+    remoteIp: ip,
+  });
 
   if (!verified) {
-    return new Response(JSON.stringify({ error: 'Turnstile verification failed' }), { status: 403 });
+    return new Response('forbidden', { status: 403 });
   }
 
   // Remove turnstile token from body before sending to Fonte
