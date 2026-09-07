@@ -19,11 +19,12 @@ async function verifyTurnstile(token: string, ip?: string): Promise<boolean> {
 }
 
 export const POST: APIRoute = async ({ request }) => {
+  const raw = await request.text();
   let body: Record<string, unknown>;
   try {
-    body = await request.json();
+    body = JSON.parse(raw);
   } catch {
-    return new Response(JSON.stringify({ error: 'Invalid request body' }), { status: 400 });
+    return new Response(JSON.stringify({ error: 'Invalid request body', raw: raw.slice(0, 200) }), { status: 400 });
   }
   const turnstileToken = body['cf-turnstile-response'];
 
