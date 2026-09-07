@@ -13,8 +13,7 @@ import { graduationPackages, generalPackages } from '../data/pricing';
   <div class="field"><label for="location">Lokasi</label><input id="location" name="location" placeholder="Kampus / area pilihan" /></div>
   <div class="field"><label for="people">Jumlah orang</label><input id="people" name="people" type="number" min="1" placeholder="1" /></div>
   <div class="field full"><label for="notes">Catatan / konsep foto</label><textarea id="notes" name="notes" rows="5" placeholder="Ceritakan suasana atau referensi yang kamu inginkan..."></textarea></div>
-  <div class="full"><div id="booking-turnstile"></div></div>
-  <div class="full turnstile-error" id="turnstile-error" hidden>Verifikasi keamanan gagal. Silakan coba lagi.</div>
+  <div class="full submission-error" id="submission-error" hidden>Pengiriman gagal. Silakan coba lagi.</div>
   <div class="full action"><p>Data tidak disimpan. Kamu akan diarahkan ke WhatsApp dengan pesan yang sudah tersusun.</p><button class="button" type="submit">Continue via WhatsApp <span>↗</span></button></div>
 </form>
 <script>
@@ -43,33 +42,10 @@ import { graduationPackages, generalPackages } from '../data/pricing';
       }
     }
 
-    const renderTurnstile = () => {
-      if (form.dataset.turnstileId || !(window as any).turnstile) return;
-      const widgetId = (window as any).turnstile.render('#booking-turnstile', {
-        sitekey: '0x4AAAAAAErOqge-5fhg0phK',
-        action: 'booking',
-        theme: 'light',
-        size: 'normal',
-      });
-      form.dataset.turnstileId = String(widgetId);
-    };
-
-    renderTurnstile();
-    window.addEventListener('turnstile-ready', renderTurnstile, { once: true });
-
     form.onsubmit = async (e) => {
       e.preventDefault();
-      const errorEl = document.getElementById('turnstile-error');
+      const errorEl = document.getElementById('submission-error');
       const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-
-      // Get Turnstile token via API (more reliable than hidden input)
-      const widgetId = form.dataset.turnstileId || '';
-      const turnstileToken = widgetId ? (window as any).turnstile?.getResponse(widgetId) : (window as any).turnstile?.getResponse() || '';
-
-      if (!turnstileToken) {
-        if (errorEl) errorEl.hidden = false;
-        return;
-      }
 
       if (errorEl) errorEl.hidden = true;
       if (submitButton) submitButton.disabled = true;
@@ -77,7 +53,7 @@ import { graduationPackages, generalPackages } from '../data/pricing';
       const get = (k: string) => data.get(k) || '-';
       const message = `Halo CL Potret 📸\n\nSaya ingin melakukan booking sesi foto.\n\nNama: ${get('name')}\nNomor WhatsApp: ${get('phone')}\nInstagram: ${get('instagram')}\nJenis Sesi: ${get('session')}\nPaket: ${get('package')}\nTanggal: ${get('date')}\nJam: ${get('time')}\nLokasi: ${get('location')}\nJumlah Orang: ${get('people')}\nCatatan: ${get('notes')}\n\nApakah jadwal tersebut tersedia?`;
 
-      // Send to Fonte via server-side API with Turnstile token
+      // Send to Fonte through the rate-limited server-side API.
       try {
         const res = await fetch('/api/booking', {
           method: 'POST',
@@ -93,14 +69,14 @@ import { graduationPackages, generalPackages } from '../data/pricing';
             location: get('location'),
             people: get('people'),
             notes: get('notes'),
-            'cf-turnstile-response': turnstileToken,
           }),
         });
 
         if (!res.ok) {
           if (errorEl) {
-            errorEl.textContent = res.status === 403
-              ? 'Verifikasi keamanan kedaluwarsa. Silakan coba lagi.'
+            const retryAfter = Number(res.headers.get('Retry-After'));
+            errorEl.textContent = res.status === 429
+              ? `Terlalu banyak percobaan. Coba lagi dalam ${Number.isFinite(retryAfter) ? retryAfter : 60} detik.`
               : 'Pengiriman gagal. Silakan coba lagi.';
             errorEl.hidden = false;
           }
@@ -114,7 +90,6 @@ import { graduationPackages, generalPackages } from '../data/pricing';
         }
         return;
       } finally {
-        if (widgetId) (window as any).turnstile?.reset(widgetId);
         if (submitButton) submitButton.disabled = false;
       }
 
@@ -125,13 +100,6 @@ import { graduationPackages, generalPackages } from '../data/pricing';
   document.addEventListener('astro:page-load', setupBooking);
   setupBooking();
 </script>
-<script
-  is:inline
-  src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-  async
-  defer
-  onload="window.dispatchEvent(new Event('turnstile-ready'))"
-></script>
 
 <style>
   form {
@@ -170,7 +138,7 @@ import { graduationPackages, generalPackages } from '../data/pricing';
     padding: 1rem;
     resize: vertical;
   }
-  .turnstile-error {
+  .submission-error {
     font-size: .78rem;
     color: #b54a4a;
     margin-top: -1rem;
