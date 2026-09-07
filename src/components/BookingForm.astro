@@ -43,13 +43,23 @@ import { graduationPackages, generalPackages } from '../data/pricing';
       }
     }
 
+    // Store Turnstile widget ID when ready
+    const turnstileWidget = form.querySelector<HTMLElement>('.cf-turnstile');
+    if (turnstileWidget) {
+      const observer = new MutationObserver(() => {
+        const widgetId = turnstileWidget.getAttribute('data-widget-id');
+        if (widgetId) form.dataset.turnstileId = widgetId;
+      });
+      observer.observe(turnstileWidget, { attributes: true, attributeFilter: ['data-widget-id'] });
+    }
+
     form.onsubmit = async (e) => {
       e.preventDefault();
       const errorEl = document.getElementById('turnstile-error');
 
-      // Get Turnstile token
-      const turnstileInput = form.querySelector<HTMLSelectElement>('[name="cf-turnstile-response"]');
-      const turnstileToken = turnstileInput?.value || '';
+      // Get Turnstile token via API (more reliable than hidden input)
+      const widgetId = form.dataset.turnstileId || '';
+      const turnstileToken = widgetId ? (window as any).turnstile?.getResponse(widgetId) : (window as any).turnstile?.getResponse() || '';
 
       if (!turnstileToken) {
         if (errorEl) errorEl.hidden = false;
