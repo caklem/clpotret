@@ -1,7 +1,9 @@
 import type { APIRoute } from 'astro';
+import { parseBookingConfirmation, sendFonnteConfirmation } from '../../lib/fonnte';
 import { bookingRateLimiter } from '../../lib/rate-limit';
 
-const FONTE_KEY = import.meta.env.FONTE_KEY;
+const FONNTE_TOKEN = import.meta.env.FONNTE_TOKEN;
+const MAX_BOOKING_BODY_BYTES = 16_384;
 
 export const prerender = false;
 
@@ -29,27 +31,32 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
+  const contentLength = Number(request.headers.get('content-length'));
+  if (Number.isFinite(contentLength) && contentLength > MAX_BOOKING_BODY_BYTES) {
+    return Response.json({ error: 'Request body terlalu besar.' }, { status: 413 });
+  }
+
   const raw = await request.text();
-  let body: Record<string, unknown>;
+  if (new TextEncoder().encode(raw).byteLength > MAX_BOOKING_BODY_BYTES) {
+    return Response.json({ error: 'Request body terlalu besar.' }, { status: 413 });
+  }
+
+  let body: unknown;
   try {
     body = JSON.parse(raw);
   } catch {
     return Response.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  try {
-    const res = await fetch('https://api.fonte.app/v1/entries', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        form: FONTE_KEY,
-        ...body,
-      }),
-    });
-
-    const data = await res.json();
-    return new Response(JSON.stringify(data), { status: res.status });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: 'Failed to submit' }), { status: 500 });
+  const booking = parseBookingConfirmation(body);
+  if (!booking) {
+    return Response.json({ error: 'Data booking tidak valid.' }, { status: 400 });
   }
+
+  const sent = await sendFonnteConfirmation({ booking, token: FONNTE_TOKEN });
+  if (!sent) {
+    return Response.json({ error: 'Gagal mengirim konfirmasi.' }, { status: 502 });
+  }
+
+  return Response.json({ success: true });
 };
