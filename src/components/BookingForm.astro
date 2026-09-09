@@ -1,52 +1,291 @@
 ---
 import { site } from '../data/site';
-import { graduationPackages, generalPackages } from '../data/pricing';
+import { graduationPackages, generalPackages, graduationAddOns, generalAddOns } from '../data/pricing';
 ---
-<form id="booking-form" data-phone={site.whatsapp}>
-  <div class="field"><label for="name">Nama *</label><input id="name" name="name" required placeholder="Nama lengkap" /></div>
-  <div class="field"><label for="phone">Nomor WhatsApp *</label><input id="phone" name="phone" required inputmode="tel" placeholder="08xxxxxxxxxx" /></div>
-  <div class="field"><label for="instagram">Instagram</label><input id="instagram" name="instagram" placeholder="@username" /></div>
-  <div class="field"><label for="session">Jenis sesi *</label><select id="session" name="session" required><option value="">Pilih jenis sesi</option><option value="Graduation Photography">Graduation Photography</option><option value="Personal / Hunting">Personal / Hunting</option><option value="Couple / Bestie">Couple / Bestie</option><option value="Event / Documentation">Event / Documentation</option><option value="Travel / Outdoor Session">Travel / Outdoor Session</option></select></div>
-  <div class="field"><label for="package">Paket</label><select id="package" name="package"><option value="">Belum memilih</option><optgroup label="Graduation">{graduationPackages.map(p => <option value={p.id}>{p.name} — {p.price}</option>)}</optgroup><optgroup label="General">{generalPackages.map(p => <option value={p.id}>{p.name} — {p.price}</option>)}</optgroup></select></div>
-  <div class="field"><label for="date">Tanggal *</label><input id="date" name="date" type="date" required /></div>
-  <div class="field"><label for="time">Jam</label><input id="time" name="time" type="time" /></div>
-  <div class="field"><label for="location">Lokasi</label><input id="location" name="location" placeholder="Kampus / area pilihan" /></div>
-  <div class="field"><label for="people">Jumlah orang</label><input id="people" name="people" type="number" min="1" placeholder="1" /></div>
-  <div class="field full"><label for="notes">Catatan / konsep foto</label><textarea id="notes" name="notes" rows="5" placeholder="Ceritakan suasana atau referensi yang kamu inginkan..."></textarea></div>
-  <div class="full action"><p>Data tidak disimpan. Kamu akan diarahkan ke WhatsApp dengan pesan yang sudah tersusun.</p><button class="button" type="submit">Continue via WhatsApp <span>↗</span></button></div>
+<form id="booking-form" data-phone={site.whatsapp}
+  data-graduation-packages={JSON.stringify(graduationPackages)}
+  data-general-packages={JSON.stringify(generalPackages)}
+  data-graduation-addons={JSON.stringify(graduationAddOns)}
+  data-general-addons={JSON.stringify(generalAddOns)}>
+  <input type="hidden" id="source" name="source" />
+
+  <fieldset>
+    <legend><span>01</span><strong>Pilih sesi</strong><small>Mulai dari kebutuhan fotomu</small></legend>
+    <div class="fields-grid">
+      <div class="field full"><label for="session">Jenis sesi *</label><select id="session" name="session" required><option value="">Pilih jenis sesi</option><option value="Graduation Photography">Graduation Photography</option><option value="Personal Portrait">Personal Portrait</option><option value="Outdoor / Hunting">Outdoor / Hunting</option><option value="Couple Session">Couple Session</option><option value="Family Session">Family Session</option><option value="Event Documentation">Event Documentation</option><option value="Creative Photography">Creative Photography</option></select></div>
+      <div class="field full"><label for="package">Paket <span>(opsional)</span></label><select id="package" name="package"><option value="">Pilih jenis sesi terlebih dahulu</option></select></div>
+      <div class="field full addons-field" hidden><label>Add-on <span>(opsional)</span></label><div id="addons-container" class="addons-grid"></div></div>
+      <div class="field full price-display"><div><label>Estimasi harga</label><small>Belum termasuk transport di luar Kota Malang</small></div><output id="price-display" class="price-value">Pilih sesi dan paket</output></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><span>02</span><strong>Detail rencana</strong><small>Bisa diubah saat konfirmasi</small></legend>
+    <div class="fields-grid">
+      <div class="field"><label for="date">Tanggal *</label><input id="date" name="date" type="date" required /><p class="error" id="date-error" aria-live="polite"></p></div>
+      <div class="field"><label for="time">Jam <span>(opsional)</span></label><input id="time" name="time" type="time" /></div>
+      <div class="field"><label for="location">Lokasi <span>(opsional)</span></label><input id="location" name="location" placeholder="Kampus / area pilihan" /></div>
+      <div class="field"><label for="people">Jumlah orang</label><input id="people" name="people" type="number" min="1" value="1" /></div>
+      <div class="field graduation-field" hidden><label for="graduates">Jumlah orang</label><input id="graduates" name="graduates" type="number" min="1" value="1" /></div>
+      <div class="field full"><label for="notes">Catatan atau konsep <span>(opsional)</span></label><textarea id="notes" name="notes" rows="4" placeholder="Contoh: ingin suasana natural, foto bersama orang tua, atau punya referensi pose..."></textarea></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend><span>03</span><strong>Data kontak</strong><small>Untuk melanjutkan konfirmasi</small></legend>
+    <div class="fields-grid">
+      <div class="field"><label for="name">Nama *</label><input id="name" name="name" required autocomplete="name" placeholder="Nama lengkap" /></div>
+      <div class="field"><label for="phone">Nomor WhatsApp *</label><input id="phone" name="phone" required inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" /><p class="error" id="phone-error" aria-live="polite"></p></div>
+      <div class="field full"><label for="instagram">Instagram <span>(opsional)</span></label><input id="instagram" name="instagram" autocomplete="off" placeholder="@username" /></div>
+    </div>
+  </fieldset>
+
+  <div class="action"><div class="privacy"><span aria-hidden="true">✓</span><p>Data tidak disimpan di website. Detail booking hanya diteruskan melalui WhatsApp.</p></div><button class="button" type="submit">Kirim ke WhatsApp <span>↗</span></button></div>
 </form>
 <script>
+  type PackageData = { id: string; name: string; price: string; includedWisudawan?: number };
+  type AddOnData = { name: string; price: string };
+
   const setupBooking = () => {
     const form = document.querySelector<HTMLFormElement>('#booking-form');
     if (!form) return;
     const query = new URLSearchParams(location.search);
     const packageSelect = form.elements.namedItem('package') as HTMLSelectElement;
     const sessionSelect = form.elements.namedItem('session') as HTMLSelectElement;
+    const dateInput = form.elements.namedItem('date') as HTMLInputElement;
+    const phoneInput = form.elements.namedItem('phone') as HTMLInputElement;
+    const peopleInput = form.elements.namedItem('people') as HTMLInputElement;
+    const graduatesInput = form.elements.namedItem('graduates') as HTMLInputElement;
+    const graduationField = graduatesInput.closest<HTMLElement>('.graduation-field');
+    const addonsContainer = document.getElementById('addons-container') as HTMLDivElement;
+    const addonsField = addonsContainer.closest<HTMLElement>('.addons-field');
+    const priceDisplay = document.getElementById('price-display') as HTMLOutputElement;
     const packageValue = query.get('package');
+    const sessionValue = query.get('session');
+    const sourceInput = form.elements.namedItem('source') as HTMLInputElement;
+    sourceInput.value = query.get('source') || '';
 
-    // Auto-select package and session from query param
-    if (packageValue) {
-      packageSelect.value = packageValue;
-      // Auto-detect session from package ID
-      if (packageValue.includes('graduation') || packageValue === 'basic-graduation') {
-        sessionSelect.value = 'Graduation Photography';
-      } else if (packageValue === 'personal-hunting') {
-        sessionSelect.value = 'Personal / Hunting';
-      } else if (packageValue === 'couple-bestie') {
-        sessionSelect.value = 'Couple / Bestie';
-      } else if (packageValue === 'event-documentation') {
-        sessionSelect.value = 'Event / Documentation';
-      } else if (packageValue === 'travel-outdoor') {
-        sessionSelect.value = 'Travel / Outdoor Session';
+    // Pricing data from server (via data attributes)
+    const graduationPkgs = JSON.parse(form.dataset.graduationPackages || '[]') as PackageData[];
+    const generalPkgs = JSON.parse(form.dataset.generalPackages || '[]') as PackageData[];
+    const graduationAddOnsData = JSON.parse(form.dataset.graduationAddons || '[]') as AddOnData[];
+    const generalAddOnsData = JSON.parse(form.dataset.generalAddons || '[]') as AddOnData[];
+    const allPackages = [...graduationPkgs, ...generalPkgs];
+    const graduationPackageIds = new Set(graduationPkgs.map(pkg => pkg.id));
+
+    // Set min date to tomorrow (H-1)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const localYear = tomorrow.getFullYear();
+    const localMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const localDay = String(tomorrow.getDate()).padStart(2, '0');
+    dateInput.min = `${localYear}-${localMonth}-${localDay}`;
+
+    // Parse price string to number (e.g., "Rp150.000" -> 150000, "Rp75.000/orang" -> 75000)
+    const parsePrice = (priceStr: string): { amount: number; perPerson: boolean } => {
+      const match = priceStr.match(/Rp?([\d.]+)/);
+      if (!match) return { amount: 0, perPerson: false };
+      const amount = parseInt(match[1].replace(/\./g, ''), 10);
+      const perPerson = priceStr.includes('/orang') || priceStr.toLowerCase().includes('per orang');
+      return { amount, perPerson };
+    };
+
+    // Format number to Rp string
+    const formatPrice = (num: number): string => {
+      return 'Rp' + num.toLocaleString('id-ID');
+    };
+
+    // Get add-ons for a package type
+    const getAddOnsForPackage = (pkgId: string) => {
+      return graduationPackageIds.has(pkgId) ? graduationAddOnsData : generalAddOnsData;
+    };
+
+    // Render add-ons checkboxes
+    const renderAddOns = (pkgId: string) => {
+      if (!pkgId) {
+        addonsContainer.innerHTML = '';
+        if (addonsField) addonsField.hidden = true;
+        return;
       }
+      const addOns = getAddOnsForPackage(pkgId).filter(addon => addon.name !== 'Extra wisudawan');
+      addonsContainer.innerHTML = addOns.map(addon => `
+        <label class="addon-item">
+          <input type="checkbox" name="addon" value="${addon.name}" data-price="${addon.price}" />
+          <span>${addon.name} <small>(${addon.price})</small></span>
+        </label>
+      `).join('');
+      if (addonsField) addonsField.hidden = addOns.length === 0;
+    };
+
+    // Map session to package IDs
+    const sessionToPackageIds: Record<string, string[]> = {
+      'Graduation Photography': graduationPkgs.map(p => p.id),
+      'Personal Portrait': ['personal-hunting'],
+      'Outdoor / Hunting': ['personal-hunting', 'travel-outdoor'],
+      'Couple Session': ['couple-bestie'],
+      'Family Session': [],
+      'Event Documentation': ['event-documentation'],
+      'Creative Photography': [],
+    };
+    const packageToSession: Record<string, string> = {
+      ...Object.fromEntries(graduationPkgs.map(pkg => [pkg.id, 'Graduation Photography'])),
+      'personal-hunting': 'Personal Portrait',
+      'couple-bestie': 'Couple Session',
+      'event-documentation': 'Event Documentation',
+      'travel-outdoor': 'Outdoor / Hunting',
+    };
+
+    // Render packages based on selected session
+    const renderPackages = (session: string) => {
+      const pkgIds = sessionToPackageIds[session] || [];
+      const pkgs = pkgIds.map(id => allPackages.find(p => p.id === id)).filter(Boolean);
+      packageSelect.innerHTML = '<option value="">Pilih paket</option>';
+      if (pkgs.length > 0) {
+        pkgs.forEach(pkg => {
+          const opt = document.createElement('option');
+          opt.value = pkg!.id;
+          opt.textContent = `${pkg!.name} — ${pkg!.price}`;
+          packageSelect.appendChild(opt);
+        });
+      } else {
+        packageSelect.innerHTML = '<option value="">Paket dikonsultasikan via WhatsApp</option>';
+      }
+    };
+
+    const syncSessionFields = () => {
+      if (graduationField) graduationField.hidden = sessionSelect.value !== 'Graduation Photography';
+    };
+
+    const getPriceBreakdown = () => {
+      const pkgId = packageSelect.value;
+      const pkg = allPackages.find(p => p.id === pkgId);
+      if (!pkg) return { pkg: undefined, total: 0, extraWisudawanCount: 0 };
+
+      const pkgPrice = parsePrice(pkg.price);
+      const people = parseInt(peopleInput.value || '1', 10);
+      const graduates = parseInt(graduatesInput.value || '1', 10);
+
+      let total = pkgPrice.perPerson ? pkgPrice.amount * people : pkgPrice.amount;
+      let extraWisudawanCount = 0;
+
+      if (pkg.includedWisudawan && graduates > pkg.includedWisudawan) {
+        extraWisudawanCount = graduates - pkg.includedWisudawan;
+        const wisudawanAddon = graduationAddOnsData.find(a => a.name === 'Extra wisudawan');
+        if (wisudawanAddon) {
+          const addonPrice = parsePrice(wisudawanAddon.price);
+          total += addonPrice.amount * extraWisudawanCount;
+        }
+      }
+
+      const selectedAddOns = Array.from(addonsContainer.querySelectorAll<HTMLInputElement>('input[name="addon"]:checked'));
+      selectedAddOns.forEach(input => {
+        const addonPrice = parsePrice(input.dataset.price || '');
+        total += addonPrice.perPerson ? addonPrice.amount * people : addonPrice.amount;
+      });
+
+      return { pkg, total, extraWisudawanCount };
+    };
+
+    const calculatePrice = () => {
+      const { pkg, total } = getPriceBreakdown();
+      if (!pkg) {
+        priceDisplay.textContent = sessionSelect.value && (sessionToPackageIds[sessionSelect.value] || []).length === 0
+          ? 'Menyesuaikan kebutuhan sesi'
+          : 'Pilih paket untuk melihat harga';
+        return;
+      }
+
+      priceDisplay.textContent = formatPrice(total);
+    };
+
+    // Auto-select session from links on the QR and services pages.
+    if (sessionValue && Array.from(sessionSelect.options).some(option => option.value === sessionValue)) {
+      sessionSelect.value = sessionValue;
+      renderPackages(sessionValue);
+      syncSessionFields();
+      calculatePrice();
     }
+
+    // Auto-select package from pricing links.
+    if (packageValue) {
+      sessionSelect.value = packageToSession[packageValue] || '';
+      // Render packages for detected session, then select the package
+      renderPackages(sessionSelect.value);
+      packageSelect.value = packageValue;
+      renderAddOns(packageValue);
+      syncSessionFields();
+      calculatePrice();
+    }
+
+    // Event listeners for dynamic updates
+    sessionSelect.addEventListener('change', () => {
+      renderPackages(sessionSelect.value);
+      packageSelect.value = '';
+      renderAddOns('');
+      syncSessionFields();
+      calculatePrice();
+    });
+    packageSelect.addEventListener('change', () => {
+      renderAddOns(packageSelect.value);
+      calculatePrice();
+    });
+    peopleInput.addEventListener('input', calculatePrice);
+    graduatesInput.addEventListener('input', calculatePrice);
+    addonsContainer.addEventListener('change', calculatePrice);
+
+    const showError = (id: string, msg: string) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = msg;
+    };
+    const clearErrors = () => {
+      form.querySelectorAll('.error').forEach(el => { el.textContent = ''; });
+    };
 
     form.onsubmit = (e) => {
       e.preventDefault();
+      clearErrors();
+      let valid = true;
+
+      // Validate phone number (Indonesian format)
+      const phone = (phoneInput.value || '').replace(/\s|-/g, '');
+      const phoneRegex = /^(\+62|62|0)8[1-9]\d{6,9}$/;
+      if (!phoneRegex.test(phone)) {
+        showError('phone-error', 'Format nomor tidak valid. Contoh: 08123456789');
+        valid = false;
+      }
+
+      // Validate date is not in the past or today
+      const selected = new Date(dateInput.value + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selected <= today) {
+        showError('date-error', 'Minimal booking H-1 (hari sebelumnya).');
+        valid = false;
+      }
+
+      if (!valid) return;
+
       const data = new FormData(form);
       const get = (k: string) => data.get(k) || '-';
+
+      const { pkg, total, extraWisudawanCount } = getPriceBreakdown();
+      data.set('package', pkg?.name || 'Konsultasikan paket');
+      if (sessionSelect.value !== 'Graduation Photography') data.set('graduates', '-');
+
+      const priceStr = total > 0 ? formatPrice(total) : 'Menyesuaikan setelah konsultasi';
+
+      // Build add-ons list for message (include auto extra wisudawan)
+      const addOnsList = [];
+      if (extraWisudawanCount > 0) {
+        addOnsList.push(`Extra wisudawan (${extraWisudawanCount} orang)`);
+      }
+      addOnsList.push(...Array.from(form.querySelectorAll<HTMLInputElement>('input[name="addon"]:checked'))
+        .filter(input => input.value !== 'Extra wisudawan')
+        .map(input => input.value));
+      const selectedAddOnsStr = addOnsList.join(', ') || '-';
+
       const cameraEmoji = String.fromCodePoint(0x1F4F8);
-      const message = `Halo CL Potret ${cameraEmoji}\n\nSaya ingin memesan sesi potret.\n\nNama: ${get('name')}\nNomor WhatsApp: ${get('phone')}\nInstagram: ${get('instagram')}\nJenis Sesi: ${get('session')}\nPaket: ${get('package')}\nTanggal: ${get('date')}\nJam: ${get('time')}\nLokasi: ${get('location')}\nJumlah Orang: ${get('people')}\nCatatan / Konsep: ${get('notes')}\n\nApakah jadwal tersebut tersedia? Terima kasih.`;
+      const message = `Halo CL Potret ${cameraEmoji}\n\nSaya ingin memesan sesi potret.\n\nNama: ${get('name')}\nNomor WhatsApp: ${get('phone')}\nInstagram: ${get('instagram')}\nJenis Sesi: ${get('session')}\nPaket: ${get('package')}\nAdd-on: ${selectedAddOnsStr}\nTanggal: ${get('date')}\nJam: ${get('time')}\nLokasi: ${get('location')}\nJumlah Orang: ${get('people')}\nJumlah Wisudawan: ${get('graduates')}\nEstimasi Harga: ${priceStr}\nCatatan / Konsep: ${get('notes')}\nSumber: ${get('source')}\n\nApakah jadwal tersebut tersedia? Terima kasih.`;
 
       window.open(`https://wa.me/${form.dataset.phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
     };
@@ -56,71 +295,6 @@ import { graduationPackages, generalPackages } from '../data/pricing';
 </script>
 
 <style>
-  form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.2rem 1.5rem;
-  }
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: .7rem;
-  }
-  .full {
-    grid-column: 1 / -1;
-  }
-  label {
-    font-size: .68rem;
-    text-transform: uppercase;
-    letter-spacing: .13em;
-    font-weight: 600;
-  }
-  input, select, textarea {
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid #aaa397;
-    border-radius: 0;
-    padding: .8rem 0;
-    outline: none;
-    color: #1d1c19;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: #1d1c19;
-  }
-  textarea {
-    border: 1px solid #aaa397;
-    padding: 1rem;
-    resize: vertical;
-  }
-  .action {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-  }
-  .action p {
-    font-size: .72rem;
-    color: #777268;
-    max-width: 360px;
-    line-height: 1.6;
-  }
-  .action span {
-    margin-left: 1rem;
-  }
-  @media (max-width: 650px) {
-    form {
-      grid-template-columns: 1fr;
-    }
-    .full {
-      grid-column: auto;
-    }
-    .action {
-      align-items: stretch;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    .action .button {
-      width: 100%;
-    }
-  }
+  form{display:grid;gap:0}fieldset{border:0;margin:0;padding:0 0 2.8rem}fieldset+fieldset{border-top:1px solid #1d1c1924;padding-top:2.8rem}legend{display:grid;grid-template-columns:2.5rem auto 1fr;gap:.75rem;align-items:baseline;width:100%;padding:0;margin:0 0 2rem}legend>span{font-size:.62rem;letter-spacing:.12em;color:#9a7658}legend strong{font-family:var(--font-display);font-size:1.8rem;font-weight:400}legend small{text-align:right;color:#8a857c;font-size:.68rem}.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.7rem 1.25rem}.field{display:flex;flex-direction:column;gap:.6rem}.full{grid-column:1/-1}label{font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;font-weight:600}label span{font-weight:400;color:#8a857c;letter-spacing:.05em;text-transform:none}input,select,textarea{width:100%;background:#f7f3ed;border:1px solid #1d1c192b;border-radius:2px;padding:.9rem 1rem;outline:none;color:#1d1c19;transition:border-color .2s,box-shadow .2s,background .2s}input:hover,select:hover,textarea:hover{border-color:#1d1c195c}input:focus,select:focus,textarea:focus{background:#fff;border-color:#9a7658;box-shadow:0 0 0 3px #9a76581c}textarea{resize:vertical;line-height:1.6}.error{font-size:.7rem;color:#b33a2b;margin:0;min-height:1em}.addons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.65rem}.addon-item{display:flex;align-items:center;gap:.65rem;padding:.8rem .9rem;border:1px solid #1d1c192b;border-radius:2px;cursor:pointer;transition:.2s;background:#f7f3ed}.addon-item:hover{border-color:#9a7658;background:#fff}.addon-item input{width:auto;margin:0;padding:0;box-shadow:none;accent-color:#9a7658}.addon-item span{font-size:.75rem;color:#1d1c19}.addon-item small{color:#777268;font-weight:400}.price-display{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:2rem;background:#e5ded2;padding:1.25rem 1.4rem}.price-display>div{display:flex;flex-direction:column;gap:.4rem}.price-display small{font-size:.68rem;color:#777268}.price-display output{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.5rem);color:#1d1c19;text-align:right}.action{display:flex;justify-content:space-between;align-items:center;gap:2rem;border-top:1px solid #1d1c1924;padding-top:2rem}.privacy{display:flex;align-items:flex-start;gap:.7rem;max-width:390px}.privacy>span{width:1.4rem;height:1.4rem;flex:none;display:grid;place-items:center;border-radius:50%;background:#dde7d9;color:#42573c;font-size:.7rem}.privacy p{font-size:.7rem;color:#777268;line-height:1.6;margin:0}.action .button{min-width:215px;border:0;cursor:pointer}.action .button span{margin-left:1rem}
+  @media(max-width:650px){fieldset{padding-bottom:2.2rem}fieldset+fieldset{padding-top:2.2rem}legend{grid-template-columns:2rem 1fr;margin-bottom:1.5rem}legend small{grid-column:2;text-align:left}.fields-grid{grid-template-columns:1fr;gap:1.35rem}.full{grid-column:auto}.addons-grid{grid-template-columns:1fr}.price-display{align-items:flex-start;flex-direction:column;gap:1rem}.price-display output{text-align:left}.action{align-items:stretch;flex-direction:column}.action .button{width:100%}}
 </style>

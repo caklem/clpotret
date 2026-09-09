@@ -1,5 +1,93 @@
 ---
-import { Image } from 'astro:assets'; import Layout from '../layouts/Layout.astro'; import CTASection from '../components/CTASection.astro'; import { services } from '../data/services';
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import CTASection from '../components/CTASection.astro';
+import { services } from '../data/services';
+
 ---
-<Layout title="Photography Services — CL Potret"><header class="page-head container-wide"><p class="eyebrow">Ways to work with us</p><h1 class="display">Photography for<br/><em>your kind of story.</em></h1></header><section class="services container-wide">{services.map((item,i)=><article class:list={{reverse:i%2}} data-reveal><div class="photo"><Image src={item.image} alt={item.name} width={1200} height={1500} widths={[600,900,1200]} sizes="(max-width: 750px) 100vw, 55vw" loading="lazy"/></div><div class="copy"><span class="eyebrow">{item.number}</span><h2 class="display">{item.name}</h2><h3>{item.short}</h3><p>{item.description}</p><a href={`/booking?session=${encodeURIComponent(item.name)}`} class="link-line">Plan this session</a></div></article>)}</section><CTASection /></Layout>
-<style>.page-head{padding:clamp(10rem,17vw,15rem) 0 clamp(6rem,10vw,10rem)}h1{font-size:clamp(4rem,9vw,9rem);margin:1rem 0}h1 em{color:#9a7658;font-weight:400}.services{padding-bottom:10rem}.services article{display:grid;grid-template-columns:1.15fr .85fr;min-height:75vh;margin-bottom:clamp(6rem,12vw,13rem);align-items:center;gap:clamp(3rem,9vw,10rem)}.services article.reverse{grid-template-columns:.85fr 1.15fr}.services article.reverse .photo{order:2}.photo img{height:75vh;min-height:600px;object-fit:cover}.copy h2{font-size:clamp(3.5rem,6vw,6.5rem);margin:1.5rem 0}.copy h3{font-family:var(--font-display);font-size:1.7rem;font-weight:400}.copy>p{line-height:1.85;color:#666159;margin:1.5rem 0 2.5rem}@media(min-width:751px) and (max-width:1100px){.page-head{padding-bottom:7rem}.services article,.services article.reverse{grid-template-columns:1fr 1fr;gap:4rem;min-height:650px;margin-bottom:8rem}.photo img{height:65vh;min-height:500px}.copy h2{font-size:3.7rem}}@media(max-width:750px){.services article,.services article.reverse{grid-template-columns:1fr;min-height:0;gap:2.5rem}.services article.reverse .photo{order:0}.photo img{height:65vh;min-height:0}}</style>
+
+<Layout
+  title="Photography Services — CL Potret"
+  description="Pilih layanan fotografi wisuda, portrait, outdoor, couple, family, dan dokumentasi event dari CL Potret Malang."
+>
+  <header class="service-hero container-wide">
+    <div class="hero-copy">
+      <p class="eyebrow">Layanan fotografi · Malang</p>
+      <h1 class="display">Pilih cerita yang<br/><em>ingin kamu simpan.</em></h1>
+    </div>
+    <div class="hero-guide">
+      <p>Belum tahu sesi yang cocok? Mulai dari kebutuhanmu—kami bantu arahkan konsep, lokasi, dan paketnya.</p>
+      <a href="#pilih-layanan" class="link-line">Lihat semua layanan</a>
+    </div>
+  </header>
+
+  <section class="quick-pick" aria-label="Navigasi cepat layanan">
+    <div class="container-wide quick-inner">
+      <p class="eyebrow">Cari berdasarkan kebutuhan</p>
+      <nav>
+        {services.map((item) => <a href={`#${item.number}`}>{item.name.replace(' Photography', '').replace(' Documentation', '')}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  <section class="services container-wide" id="pilih-layanan">
+    <div class="section-heading">
+      <p class="eyebrow">Semua layanan</p>
+      <p>Setiap sesi sudah termasuk arahan pose ringan dan diskusi konsep sebelum hari pemotretan.</p>
+    </div>
+
+    <div class="service-grid">
+      {services.map((item, index) => (
+        <article id={item.number} class:list={{ featured: index === 0 }} data-reveal>
+          <div class="photo">
+            <Image
+              src={item.image}
+              alt={item.name}
+              width={1200}
+              height={1500}
+              widths={[480, 800, 1200]}
+              sizes={index === 0 ? '(max-width: 760px) 100vw, 62vw' : '(max-width: 760px) 100vw, 33vw'}
+              loading={index === 0 ? 'eager' : 'lazy'}
+            />
+            <span class="number">{item.number}</span>
+          </div>
+          <div class="copy">
+            <p class="service-note">{item.note}</p>
+            <h2 class="display">{item.name}</h2>
+            <h3>{item.short}</h3>
+            <p>{item.description}</p>
+            <div class="actions">
+              <a href={`/booking?session=${encodeURIComponent(item.name)}&source=services`} class="button">Pilih sesi ini</a>
+              <a href="/pricing" class="text-link">Lihat paket & harga <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="how-it-works">
+    <div class="container-wide">
+      <div>
+        <p class="eyebrow">Cara booking</p>
+        <h2 class="display">Sederhana dari awal.</h2>
+      </div>
+      <ol>
+        <li><span>01</span><div><strong>Pilih layanan</strong><p>Tentukan jenis sesi yang paling mendekati kebutuhanmu.</p></div></li>
+        <li><span>02</span><div><strong>Isi rencana singkat</strong><p>Masukkan tanggal, lokasi, dan gambaran konsep.</p></div></li>
+        <li><span>03</span><div><strong>Konfirmasi via WhatsApp</strong><p>Kami cek jadwal dan lanjut diskusi secara personal.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <CTASection />
+</Layout>
+
+<style>
+  .service-hero{padding:clamp(9rem,15vw,14rem) 0 clamp(4.5rem,8vw,8rem);display:grid;grid-template-columns:1.4fr .6fr;gap:clamp(3rem,8vw,9rem);align-items:end}.service-hero h1{font-size:clamp(4rem,8.5vw,8.5rem);margin:1.2rem 0 0}.service-hero h1 em{color:#9a7658;font-weight:400}.hero-guide{padding-bottom:.65rem}.hero-guide p{max-width:30rem;color:#68645d;line-height:1.8;margin:0 0 2rem}
+  .quick-pick{border-block:1px solid #1d1c1926;background:#ebe5dc}.quick-inner{display:grid;grid-template-columns:220px 1fr;gap:2rem;padding-block:1.5rem;align-items:center}.quick-inner p{margin:0;color:#777268}.quick-inner nav{display:flex;gap:.65rem;overflow-x:auto;padding:.2rem 0;scrollbar-width:thin}.quick-inner nav a{flex:none;border:1px solid #1d1c1933;border-radius:999px;padding:.65rem 1rem;font-size:.72rem;transition:.2s}.quick-inner nav a:hover{background:#1d1c19;color:#fff;border-color:#1d1c19}
+  .services{padding-block:clamp(5rem,9vw,9rem)}.section-heading{display:flex;justify-content:space-between;gap:2rem;align-items:start;margin-bottom:3rem}.section-heading>p:last-child{max-width:34rem;margin:0;color:#68645d;line-height:1.7}.service-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(3rem,6vw,6rem) clamp(1.2rem,3vw,3rem)}article{scroll-margin-top:7rem}.photo{position:relative;overflow:hidden;background:#ddd4c7}.photo img{aspect-ratio:4/3;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}article:hover .photo img{transform:scale(1.02)}.number{position:absolute;top:1rem;left:1rem;width:2.65rem;height:2.65rem;display:grid;place-items:center;border-radius:50%;background:#f3f0e9;color:#1d1c19;font-size:.65rem;letter-spacing:.08em}.copy{padding-top:1.6rem}.service-note{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:#8a715c;margin:0 0 1rem}.copy h2{font-size:clamp(2.5rem,4.6vw,4.8rem);margin:0}.copy h3{font-family:var(--font-display);font-size:1.45rem;font-weight:400;margin:1rem 0}.copy>p:last-of-type{color:#68645d;line-height:1.75;max-width:40rem}.actions{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-top:1.7rem}.text-link{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid #1d1c19;padding-bottom:.35rem}.featured{grid-column:1/-1;display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(2rem,6vw,7rem);align-items:center;margin-bottom:1rem}.featured .photo img{aspect-ratio:16/10}.featured .copy{padding:1rem 0}.featured .copy h2{font-size:clamp(3.5rem,6vw,6.5rem)}
+  .how-it-works{background:#d8cdbd;padding:clamp(4.5rem,8vw,8rem) 0}.how-it-works>.container-wide{display:grid;grid-template-columns:.75fr 1.25fr;gap:clamp(3rem,8vw,9rem)}.how-it-works h2{font-size:clamp(3.5rem,6vw,6rem);margin:1rem 0}.how-it-works ol{list-style:none;padding:0;margin:0}.how-it-works li{display:grid;grid-template-columns:3rem 1fr;gap:1rem;border-top:1px solid #1d1c193d;padding:1.5rem 0}.how-it-works li>span{font-size:.65rem;letter-spacing:.1em}.how-it-works strong{font-family:var(--font-display);font-size:1.7rem;font-weight:400}.how-it-works li p{color:#68645d;margin:.5rem 0 0;line-height:1.6;font-size:.88rem}
+  @media(max-width:900px){.service-hero{grid-template-columns:1fr;gap:2.5rem}.quick-inner{grid-template-columns:1fr;gap:1rem}.featured{grid-template-columns:1fr}.how-it-works>.container-wide{grid-template-columns:1fr}}
+  @media(max-width:700px){.service-hero{padding-top:8rem}.service-hero h1{font-size:clamp(3.5rem,15vw,5.3rem)}.section-heading{display:block}.section-heading>p:last-child{margin-top:1rem}.service-grid{grid-template-columns:1fr}.featured{grid-column:auto}.photo img,.featured .photo img{aspect-ratio:4/3}.copy h2,.featured .copy h2{font-size:clamp(2.7rem,13vw,4.2rem)}.actions .button{flex:1}.how-it-works h2{font-size:3.5rem}}
+</style>

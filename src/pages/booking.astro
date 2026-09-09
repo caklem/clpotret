@@ -1,5 +1,62 @@
 ---
-import Layout from '../layouts/Layout.astro'; import BookingForm from '../components/BookingForm.astro';
+import Layout from '../layouts/Layout.astro';
+import BookingForm from '../components/BookingForm.astro';
 ---
-<Layout title="Booking Session — CL Potret"><div class="booking"><header><p class="eyebrow">Start a conversation</p><h1 class="display">Let’s plan<br/><em>your session.</em></h1><p>Isi detail singkat di bawah. Setelah itu, kamu akan diarahkan ke WhatsApp untuk memastikan jadwal dan membicarakan konsep bersama kami.</p></header><section><BookingForm /></section></div><aside><p class="eyebrow">Before you book</p><ol><li><span>01</span><div><h2>Pilih sesi</h2><p>Tentukan layanan dan paket yang paling sesuai.</p></div></li><li><span>02</span><div><h2>Ceritakan idemu</h2><p>Tidak harus matang—kami bantu mengembangkannya.</p></div></li><li><span>03</span><div><h2>Konfirmasi jadwal</h2><p>Kami akan membalas ketersediaan melalui WhatsApp.</p></div></li></ol></aside></Layout>
-<style>.booking{padding:clamp(9rem,15vw,13rem) max(1rem,6vw) 8rem;display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(4rem,10vw,12rem)}header h1{font-size:clamp(4rem,7vw,7.5rem);margin:1.5rem 0 2rem}header h1 em{color:#9a7658;font-weight:400}header>p:last-child{line-height:1.8;color:#68645d}aside{background:#d8cdbd;padding:clamp(4rem,8vw,8rem) max(1rem,12vw)}ol{list-style:none;padding:0;margin:3rem 0 0}li{display:grid;grid-template-columns:50px 1fr;border-top:1px solid #1d1c1940;padding:1.4rem 0}li>span{font-size:.65rem}li h2{font-family:var(--font-display);font-weight:400;font-size:2rem;margin:0 0 .5rem}li p{margin:0;color:#68645d;font-size:.85rem}@media(min-width:851px) and (max-width:1100px){.booking{padding-inline:3rem;grid-template-columns:.85fr 1.15fr;gap:4rem}.booking header h1{font-size:4.5rem}}@media(max-width:850px){.booking{grid-template-columns:1fr;gap:4rem}}</style>
+
+<Layout
+  title="Booking Session — CL Potret"
+  description="Booking sesi fotografi CL Potret dengan mudah. Pilih layanan, tanggal, lokasi, lalu konfirmasi melalui WhatsApp."
+>
+  <header class="booking-hero container-wide">
+    <div>
+      <p class="eyebrow">Booking session · Malang</p>
+      <h1 class="display">Ceritakan rencanamu,<br/><em>kami bantu sisanya.</em></h1>
+    </div>
+    <p>Isi detail yang sudah kamu tahu. Setelah dikirim, WhatsApp akan terbuka dengan pesan yang sudah tersusun—belum ada pembayaran di tahap ini.</p>
+  </header>
+
+  <div class="booking-layout container-wide">
+    <aside>
+      <div class="sticky-card">
+        <p class="eyebrow">Alur booking</p>
+        <ol>
+          <li><span>01</span><div><strong>Pilih sesi & paket</strong><p>Estimasi harga akan muncul otomatis.</p></div></li>
+          <li><span>02</span><div><strong>Tentukan rencana</strong><p>Masukkan tanggal, jam, dan lokasi pilihan.</p></div></li>
+          <li><span>03</span><div><strong>Lanjut ke WhatsApp</strong><p>Kami akan cek jadwal sebelum booking dikonfirmasi.</p></div></li>
+        </ol>
+        <div class="help">
+          <span aria-hidden="true">?</span>
+          <p><strong>Belum tahu pilih yang mana?</strong><br/>Lihat perbandingan layanan terlebih dahulu.</p>
+        </div>
+        <a href="/services" class="link-line">Lihat services</a>
+      </div>
+    </aside>
+
+    <section class="form-card" aria-label="Form booking sesi foto">
+      <div class="form-heading">
+        <div><p class="eyebrow">Form booking</p><h2 class="display">Mulai dari sini.</h2></div>
+        <span>± 2 menit</span>
+      </div>
+      <BookingForm />
+    </section>
+  </div>
+
+  <section class="after-booking">
+    <div class="container-wide">
+      <p class="eyebrow">Setelah form dikirim</p>
+      <div class="after-grid">
+        <h2 class="display">Santai, belum langsung terikat.</h2>
+        <p>Kami akan membalas melalui WhatsApp untuk memastikan jadwal, menyelaraskan konsep, dan menjelaskan detail pembayaran. Booking baru dianggap terkonfirmasi setelah kamu menyetujuinya.</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .booking-hero{padding:clamp(9rem,14vw,13rem) 0 clamp(4rem,7vw,7rem);display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(3rem,8vw,9rem);align-items:end}.booking-hero h1{font-size:clamp(4rem,7.5vw,7.7rem);margin:1.2rem 0 0}.booking-hero h1 em{color:#9a7658;font-weight:400}.booking-hero>p{color:#68645d;line-height:1.8;margin:0 0 .5rem;max-width:34rem}
+  .booking-layout{display:grid;grid-template-columns:minmax(280px,.65fr) minmax(0,1.35fr);gap:clamp(2rem,5vw,5.5rem);align-items:start;padding-bottom:clamp(6rem,10vw,10rem)}.sticky-card{position:sticky;top:7rem;background:#d8cdbd;padding:clamp(1.5rem,3vw,2.8rem)}ol{list-style:none;padding:0;margin:2rem 0}li{display:grid;grid-template-columns:2.5rem 1fr;gap:.8rem;border-top:1px solid #1d1c1938;padding:1.25rem 0}li>span{font-size:.62rem;letter-spacing:.1em}li strong{font-family:var(--font-display);font-size:1.4rem;font-weight:400}li p{margin:.35rem 0 0;font-size:.78rem;line-height:1.55;color:#68645d}.help{display:flex;gap:.8rem;align-items:flex-start;border-top:1px solid #1d1c1938;padding-top:1.3rem;margin-bottom:1.4rem}.help>span{width:1.7rem;height:1.7rem;flex:none;display:grid;place-items:center;border:1px solid #1d1c1950;border-radius:50%;font-size:.72rem}.help p{font-size:.75rem;line-height:1.55;margin:0;color:#68645d}.help strong{color:#1d1c19}
+  .form-card{background:#fffdf8;border:1px solid #1d1c1917;padding:clamp(1.4rem,4vw,4rem);box-shadow:0 24px 70px #372d2010}.form-heading{display:flex;justify-content:space-between;gap:2rem;align-items:start;border-bottom:1px solid #1d1c1924;padding-bottom:2rem;margin-bottom:2.5rem}.form-heading h2{font-size:clamp(3rem,5vw,5rem);margin:.8rem 0 0}.form-heading>span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#777268;border:1px solid #1d1c1928;border-radius:999px;padding:.55rem .8rem;white-space:nowrap}
+  .after-booking{background:#1d1c19;color:#f3f0e9;padding:clamp(4.5rem,8vw,8rem) 0}.after-booking .eyebrow{color:#ffffff88}.after-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(3rem,8vw,9rem);align-items:end}.after-grid h2{font-size:clamp(3.2rem,6vw,6rem);margin:1.3rem 0 0}.after-grid p{color:#ffffffa8;line-height:1.8;margin:0;max-width:34rem}
+  @media(max-width:900px){.booking-hero{grid-template-columns:1fr;gap:2rem}.booking-layout{grid-template-columns:1fr}.sticky-card{position:relative;top:auto}.sticky-card ol{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.sticky-card li{grid-template-columns:1fr}.after-grid{grid-template-columns:1fr}}
+  @media(max-width:650px){.booking-hero{padding-top:8rem;min-width:0;overflow:hidden}.booking-hero h1{font-size:clamp(3.2rem,13vw,4.4rem)}.booking-hero>p{width:calc(100vw - 2rem);overflow-wrap:anywhere}.booking-layout{width:100%;gap:0}.booking-layout aside{order:2}.sticky-card{padding:2rem 1rem}.sticky-card ol{grid-template-columns:1fr}.form-card{order:1;min-width:0;border:0}.form-heading{align-items:center}.form-heading h2{font-size:3.3rem}.after-booking{padding-inline:0}}
+</style>

@@ -1,0 +1,66 @@
+---
+import { Image } from 'astro:assets';
+import BrandLogo from '../components/BrandLogo.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Mulai Sesi Foto — CL Potret"
+  description="Pilih layanan atau mulai booking sesi fotografi CL Potret di Malang."
+  hideChrome
+>
+  <div class="qr-page">
+    <div class="visual" aria-hidden="true">
+      <Image
+        src="/IMG/graduation-hero.jpg"
+        alt=""
+        width={1200}
+        height={1600}
+        widths={[600, 900, 1200]}
+        sizes="(max-width: 760px) 100vw, 48vw"
+        loading="eager"
+      />
+      <div class="shade"></div>
+      <p>Malang, Jawa Timur</p>
+    </div>
+
+    <main>
+      <a href="/" class="brand" aria-label="Kembali ke beranda CL Potret">
+        <BrandLogo size="5.5rem" loading="eager" />
+      </a>
+      <div class="intro">
+        <p class="eyebrow">Selamat datang di CL Potret</p>
+        <h1 class="display">Momenmu,<br/><em>kita abadikan.</em></h1>
+        <p>Pilih layanan untuk melihat sesi yang cocok, atau langsung ceritakan rencanamu lewat form booking.</p>
+      </div>
+
+      <div class="primary-actions">
+        <a class="action-card primary" href="/booking?source=qr">
+          <span class="icon" aria-hidden="true">01</span>
+          <span><strong>Booking Session</strong><small>Sudah punya rencana atau tanggal?</small></span>
+          <b aria-hidden="true">↗</b>
+        </a>
+        <a class="action-card" href="/services?source=qr">
+          <span class="icon" aria-hidden="true">02</span>
+          <span><strong>Lihat Services</strong><small>Temukan jenis sesi yang paling cocok.</small></span>
+          <b aria-hidden="true">→</b>
+        </a>
+      </div>
+
+      <nav class="secondary" aria-label="Tautan lainnya">
+        <a href="/portfolio">Portfolio</a>
+        <a href="/pricing">Paket & harga</a>
+        <a href="/">Website utama</a>
+      </nav>
+
+      <div class="reassurance">
+        <span>Diskusi konsep</span><span>Respon via WhatsApp</span><span>Area Malang</span>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .qr-page{min-height:100svh;background:#f3f0e9;display:grid;grid-template-columns:minmax(340px,48%) 1fr}.visual{height:100svh;position:sticky;top:0;overflow:hidden}.visual img{height:100%;object-fit:cover}.shade{position:absolute;inset:0;background:linear-gradient(180deg,#15130f18 45%,#15130fc7)}.visual>p{position:absolute;left:2rem;bottom:2rem;color:#fff;margin:0;font-size:.65rem;letter-spacing:.16em;text-transform:uppercase}.qr-page>main{padding:clamp(2rem,5vw,5.5rem);display:flex;flex-direction:column;justify-content:center}.brand{position:absolute;top:clamp(2rem,4vw,4rem);width:max-content}.intro{margin-top:5rem}.intro>.eyebrow{color:#806b58}.intro h1{font-size:clamp(3.8rem,7vw,7.2rem);margin:1.3rem 0 1.5rem}.intro h1 em{font-weight:400;color:#9a7658}.intro>p:last-child{max-width:35rem;color:#68645d;line-height:1.75;margin-bottom:2.5rem}.primary-actions{display:grid;gap:.75rem;max-width:42rem}.action-card{display:grid;grid-template-columns:2.7rem 1fr auto;gap:1rem;align-items:center;border:1px solid #1d1c1938;padding:1.2rem 1.25rem;transition:transform .2s,background .2s,color .2s}.action-card:hover{transform:translateY(-2px);background:#e5ded2}.action-card.primary{background:#1d1c19;color:#fff;border-color:#1d1c19}.action-card.primary:hover{background:#9a7658;border-color:#9a7658}.icon{font-size:.62rem;letter-spacing:.1em;opacity:.65}.action-card strong{display:block;font-family:var(--font-display);font-size:1.65rem;font-weight:400}.action-card small{display:block;margin-top:.3rem;font-size:.72rem;opacity:.65}.action-card b{font-size:1.2rem;font-weight:400}.secondary{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.8rem}.secondary a{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:.25rem}.reassurance{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:2.5rem;color:#777268;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em}.reassurance span+span::before{content:'·';margin-right:.7rem}
+  @media(max-width:760px){.qr-page{grid-template-columns:minmax(0,1fr)}.visual{height:32svh;position:relative}.visual>p{left:1rem;bottom:1rem}.qr-page>main{min-width:0;min-height:68svh;padding:1.4rem 1rem 2rem;justify-content:start;overflow:hidden}.brand{position:absolute;top:1.2rem;left:1rem;z-index:2;color:#fff;filter:brightness(0) invert(1)}.intro{margin-top:1.3rem;min-width:0}.intro h1{font-size:clamp(3.2rem,13vw,4.3rem);margin:.9rem 0 1rem}.intro>p:last-child{width:calc(100vw - 2rem);margin-bottom:1.5rem;overflow-wrap:anywhere}.action-card{grid-template-columns:2.2rem minmax(0,1fr) auto;padding:1rem}.secondary{margin-top:1.4rem}.reassurance{margin-top:1.6rem}}
+</style>

@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { portfolio, categories } from '../data/portfolio';
 import type { FeaturedItem } from '../data/featured';
 interface Props { limit?: number; interactive?: boolean; items?: FeaturedItem[]; }
@@ -9,8 +8,9 @@ const items = customItems ?? (limit ? portfolio.slice(0, limit) : portfolio);
 {interactive && <div class="filters" aria-label="Filter portfolio">{categories.map((c,i) => <button class:list={{active:i===0}} data-filter={c}>{c}</button>)}</div>}
 <div class:list={['portfolio-grid',{compact:limit}]} data-grid>
   {items.map((item) => <article data-category={item.category} class={item.ratio}>
-    <button class="image" data-lightbox={item.image} data-title={item.title} aria-label={`Lihat ${item.title}`}><Image src={item.image} alt={`${item.title} — ${item.category} photography by CL Potret`} width={1600} height={1200} widths={[480,800,1200]} sizes="(max-width: 700px) 85vw, 50vw" loading="lazy" style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined} /></button>
+    <button class="image" data-lightbox={item.image} data-title={item.title} aria-label={`Lihat ${item.title}`}><img src={item.image} alt={`${item.title} — ${item.category} photography by CL Potret`} loading="lazy" style={item.objectPosition ? { objectPosition: item.objectPosition } : undefined} /></button>
     <div class="meta"><div><p>{item.category}</p><h3 class="display"><a href={`/portfolio/${item.slug}`}>{item.title}</a></h3></div><span>{item.location}</span></div>
+    {'description' in item && <p class="description">{item.description}</p>}
   </article>)}
 </div>
 <dialog data-dialog><button class="close" aria-label="Tutup">Close ×</button><img alt="" /><p></p></dialog>
@@ -25,8 +25,8 @@ const items = customItems ?? (limit ? portfolio.slice(0, limit) : portfolio);
 </script>
 <style>
   .filters{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:4rem}.filters button{background:none;border:0;padding:.4rem 0;color:#777268;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid transparent}.filters button.active{color:#1d1c19;border-color:#1d1c19}
-  .portfolio-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(2rem,5vw,6rem) clamp(1rem,3vw,3rem)}article{grid-column:span 6}article:nth-child(4n+1){grid-column:span 7}article:nth-child(4n+2){grid-column:9/span 4;margin-top:8rem}article:nth-child(4n+3){grid-column:2/span 4}article:nth-child(4n+4){grid-column:7/span 6;margin-top:4rem}.image{padding:0;border:0;background:none;width:100%;overflow:hidden;cursor:zoom-in}.image img{height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .4s}.image:hover img{transform:scale(1.025);filter:saturate(.8)}.portrait .image{aspect-ratio:4/5}.landscape .image{aspect-ratio:4/3}.square .image{aspect-ratio:1}.meta{display:flex;justify-content:space-between;gap:1rem;margin-top:1.1rem}.meta p,.meta span{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:#777268}.meta h3{font-size:clamp(1.65rem,3vw,2.5rem);margin:.35rem 0}.meta span{text-align:right;margin-top:.2rem}
+  .portfolio-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,6rem) clamp(1.5rem,4vw,4rem)}article:nth-child(even){margin-top:6rem}.image{padding:0;border:0;background:none;width:100%;overflow:hidden;cursor:zoom-in}.image img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.8,.2,1),filter .4s}.image:hover img{transform:scale(1.025);filter:saturate(.8)}.image{aspect-ratio:1}.meta{display:flex;justify-content:space-between;gap:1rem;margin-top:1.1rem}.meta p,.meta span{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:#777268}.meta h3{font-size:clamp(1.65rem,3vw,2.5rem);margin:.35rem 0}.meta span{text-align:right;margin-top:.2rem}.description{max-width:42rem;margin:.75rem 0 0;color:#646057;font-size:.88rem;line-height:1.7}
   dialog{padding:0;border:0;background:#141311;color:white;width:100vw;max-width:none;height:100vh;max-height:none}dialog::backdrop{background:#141311}.close{position:fixed;z-index:2;right:1.5rem;top:1.5rem;background:#f3f0e9;border:0;padding:.8rem 1rem;text-transform:uppercase;font-size:.65rem;letter-spacing:.1em}dialog img{width:100%;height:calc(100vh - 4rem);object-fit:contain}dialog p{text-align:center;margin:.8rem;font-family:var(--font-display);font-size:1.4rem}
-  @media(min-width:701px) and (max-width:1100px){.portfolio-grid{grid-template-columns:1.08fr .92fr;gap:5rem 2rem}.portfolio-grid article,.portfolio-grid article:nth-child(n){grid-column:auto;margin-top:0}.portfolio-grid article:nth-child(even){margin-top:5rem}}
-  @media(max-width:700px){.filters{gap:1rem;margin-bottom:2.5rem}.portfolio-grid{display:block}.portfolio-grid article{margin:0 0 3.5rem}.portfolio-grid article:nth-child(even){margin-left:15%}.meta h3{font-size:1.8rem}.compact article:nth-child(n+5){display:none}}
+  @media(min-width:701px) and (max-width:1100px){.portfolio-grid{grid-template-columns:1fr 1fr;gap:4rem 2rem}article:nth-child(even){margin-top:4rem}}
+  @media(max-width:700px){.filters{gap:1rem;margin-bottom:2.5rem}.portfolio-grid{grid-template-columns:1fr;gap:3.5rem}article:nth-child(even){margin-top:0;margin-left:15%}.meta h3{font-size:1.8rem}.compact article:nth-child(n+5){display:none}}
 </style>

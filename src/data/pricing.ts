@@ -12,6 +12,7 @@ export interface PricingPackage {
   note?: string;
   tagline?: string;
   features: string[];
+  includedWisudawan?: number;
 }
 
 export interface AddOn {
@@ -29,6 +30,7 @@ export const graduationPackages: PricingPackage[] = [
     name: 'Basic Graduation',
     price: 'Rp150.000',
     tagline: 'Simple moments, big memories',
+    includedWisudawan: 1,
     features: [
       '30 menit sesi foto',
       '1 wisudawan',
@@ -42,6 +44,7 @@ export const graduationPackages: PricingPackage[] = [
     name: 'Graduation Standard',
     price: 'Rp225.000',
     tagline: 'Together makes it special',
+    includedWisudawan: 1,
     features: [
       '60 menit sesi foto',
       '1 wisudawan + keluarga/pasangan',
@@ -55,6 +58,7 @@ export const graduationPackages: PricingPackage[] = [
     name: 'Graduation Bestie',
     price: 'Rp300.000',
     tagline: 'Friends today, legends tomorrow',
+    includedWisudawan: 2,
     features: [
       '60–90 menit sesi foto',
       'Maksimal 2 wisudawan',
